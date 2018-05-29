@@ -145,7 +145,7 @@ server <- shinyServer(function(input, output, session) {
                                   "Please contact Alicia TRAN DIEN (alicia.tran-dien@gustaveroussy.fr) from", 
                                   img(src = "logo.jpg", height = 50, width = 80),
                                   "Bioinformatics plateform for any requests.")),
-        div (style='color:grey', p(style = "text-align:center","Or download the help file for more information.")),
+        div (style='color:grey', p(style = "text-align:center","Or download the help document for further information.")),
         br(),
         div(style="text-align: center;",
             actionButton("helper", "Help document", onclick = "window.open('SuGR.doc')"))
