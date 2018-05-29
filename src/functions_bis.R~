@@ -1,0 +1,10 @@
+TMP_FILES <- function(original,tmp_file){
+# create folder tmp to put input uploaded and name it like the original ----------------------------------------------------------------------------
+  
+    file.remove(list.files("tmp/",full.names = T))
+    file.copy(from = original,to = paste0("tmp/", tmp_file))
+    tmp_fileCEL <- paste0("tmp/",tmp_file)
+    new_names = gsub(" |-_","_",tmp_fileCEL)
+ message(tmp_fileCEL)
+
+    }
