@@ -2,7 +2,7 @@
 options(shiny.maxRequestSize=200*1024^2)
 
 #number of fails for the password
-num_fails_to_lockout <- 100
+num_fails_to_lockout <- 5
 
 
 ########### LOADING LIBRARIES ######################################################################################################################
