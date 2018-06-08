@@ -1,2 +1,2 @@
 # SuGR
-SuGR (SAFIR02 upload Gustave Roussy) allows you to check your CEL and NGS files before submission and submit them on Synapse.
+Welcome to SuGR (SAFIR02 Upload Gustave Roussy), the Shiny application that allows you to check, edit your files and submit them on Synapse.

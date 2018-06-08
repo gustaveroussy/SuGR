@@ -21,20 +21,20 @@ if(!require(data.table))
 if(!require(digest))  
   install.packages("digest",repos='https://cloud.r-project.org/')
 
-if(!require(pathview))
+if(!require(rCGH))
   BiocInstaller::biocLite("rCGH")
 
-if(!require(pathview))
+if(!require(cytoScanLinux))
   BiocInstaller::biocLite("cytoScanLinux")
 
-if(!require(pathview))
+if(!require(affxparser))
   BiocInstaller::biocLite("affxparser")
 
 if(!require(R.utils))  
   install.packages("R.utils",repos='https://cloud.r-project.org/')
 
-if(!require(synapseClient))  
-  install.packages("synapseClient",repos='https://cloud.r-project.org/')
+source("http://depot.sagebase.org/CRAN.R")
+pkgInstall(c("synapseClient"))
 
 if(!require(shiny.semantic))  
   install.packages("shiny.semantic",repos='https://cloud.r-project.org/')
