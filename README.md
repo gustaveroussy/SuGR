@@ -1,2 +1,2 @@
 # SuGR
-Welcome to SuGR (SAFIR02 Upload Gustave Roussy), the Shiny application that allows you to check, edit your files and submit them on Synapse.
+Welcome to SuGR (SAFIR02 Upload Gustave Roussy), the Shiny application that allows you to check, edit and submit your files on Synapse.
