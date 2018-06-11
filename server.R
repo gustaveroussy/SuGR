@@ -53,6 +53,7 @@ cel.ID = reactiveValues(valeur=NULL)
 dezip.cel = reactiveValues(valeur=NULL)
 toStop=reactiveValues(status=F)
 dir_file = reactiveValues(val=NULL)
+dir_tmp = reactiveValues(val=NULL)
 
 # END OF reactive values ===========================================================================================================================
 #===================================================================================================================================================
@@ -96,8 +97,18 @@ shinyServer(function(input, output, session) {
     } else {
       
       #create tmp_username folder
-      dir_file$val=paste0("data/tmpData/",input$user_name,"/")
+      dir_tmp$val=paste0("data/tmpData/")
+      print(dir_tmp$val)
+      if (dir.exists(dir_tmp$val)){
+        file.remove(list.files(dir_tmp$val,full.names=T))
+        
+      } else{
+        dir.create(dir_tmp$val)
+      }
       
+      
+      dir_file$val=paste0(dir_tmp$val,input$user_name,"/")
+      print(dir_file$val)
       if (dir.exists(dir_file$val)){
         file.remove(list.files(dir_file$val,full.names=T))
         
