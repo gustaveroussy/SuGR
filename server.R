@@ -98,7 +98,6 @@ shinyServer(function(input, output, session) {
       
       #create tmp_username folder
       dir_tmp$val=paste0("data/tmpData/")
-      print(dir_tmp$val)
       if (dir.exists(dir_tmp$val)){
         file.remove(list.files(dir_tmp$val,full.names=T))
         
@@ -108,7 +107,6 @@ shinyServer(function(input, output, session) {
       
       
       dir_file$val=paste0(dir_tmp$val,input$user_name,"/")
-      print(dir_file$val)
       if (dir.exists(dir_file$val)){
         file.remove(list.files(dir_file$val,full.names=T))
         
@@ -414,7 +412,7 @@ shinyServer(function(input, output, session) {
   
   # check if Onco or Cyto scan ---------------------------------------------------------------------------------------------------------------
   observeEvent(input$uploaded_files_cel,{
-    platform <- readRDS("data/appData/plateform.rds")
+    platform <- read.table("data/appData/plateform.tsv", header = TRUE , sep = "\t")
     row_username <- which(platform$user == input$user_name)
     
     if (length(grep (pattern = ".bz2",  innew.file_cel$valeur)) > 0 ) {
@@ -839,8 +837,7 @@ shinyServer(function(input, output, session) {
     # connect to synapse
 
 
-    platform <- readRDS("data/appData/plateform.rds")
-
+    plateform <- read.table("data/appData/plateform.tsv", header = TRUE , sep = "\t")
     row_username <- which(platform$user == input$user_name)
 
     ACfiles <- grep(pattern = "_AC", in.file_ngs$valeur)
@@ -1009,7 +1006,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$login_button, {
     
-    plateform <- readRDS("data/appData/plateform.rds")
+    plateform <- read.table("data/appData/plateform.tsv", header = TRUE , sep = "\t")
     row_username <- which(plateform$user == input$user_name)
     if (length(row_username) == 1){
     withProgress(expr = {synapseLogin(input$user_name, input$password)}, message = "Connecting to Synapse... Please wait")   
