@@ -329,15 +329,16 @@ shinyServer(function(input, output, session) {
     
     #file.remove(list.files(dir_file$val,full.names = T))
     file.copy(from = input$file2$datapath,to = paste0(dir_file$val,input$file2$name))
-    
-    
     files=list.files(dir_file$val,full.names =T) 
     file_list=list()
     for(i in files){
-      
-      file_list[[basename(i)]]=
+      if (length(grep (pattern = ".CEL|.CEL.bz2", i)) > 0 ) {
+        file_list[[basename(i)]]=i
         
-        if (length(grep (pattern = ".CEL|.CEL.bz2", i)) > 0 ) {}
+      } else {
+        
+      }
+        
     }
     files.list_cel$valeur=file_list
     
