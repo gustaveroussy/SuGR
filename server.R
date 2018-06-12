@@ -327,7 +327,7 @@ shinyServer(function(input, output, session) {
     
     
     
-    file.remove(list.files(dir_file$val,full.names = T))
+    #file.remove(list.files(dir_file$val,full.names = T))
     file.copy(from = input$file2$datapath,to = paste0(dir_file$val,input$file2$name))
     
     
@@ -474,7 +474,7 @@ shinyServer(function(input, output, session) {
   # upload to synapse ---------------------------------------------------------------------------------------------------------------------------
   
   
-  table_synIDCEL = read.table("credentials/table_syn2.tsv", header = TRUE , sep = "\t")
+  table_synIDCEL = read.table("credentials/table_syn.tsv", header = TRUE , sep = "\t")
   table.synIDCEL$valeur = table_synIDCEL
   
   
@@ -482,9 +482,7 @@ shinyServer(function(input, output, session) {
     
     if(!toStop$status){
       
-    
-    
-    table.synIDCEL$valeur <- rbind (table.synIDCEL$valeur, data.frame(inputfile = innew.file_cel$valeur,
+      table.synIDCEL$valeur <- rbind (table.synIDCEL$valeur, data.frame(inputfile = innew.file_cel$valeur,
                                                                       synID = syn.IDCEL$valeur))
     
     table.synIDCEL$valeur <- table.synIDCEL$valeur[!duplicated(table.synIDCEL$valeur[,c('inputfile')]),]
@@ -543,7 +541,7 @@ shinyServer(function(input, output, session) {
     
     
     
-    file.remove(list.files(dir_file$val,full.names = T))
+    #file.remove(list.files(dir_file$val,full.names = T))
     file.copy(from = input$file1$datapath,to = paste0(dir_file$val,input$file1$name))
     files=list.files(dir_file$val,full.names =T) 
     file_list=list()
@@ -837,7 +835,7 @@ shinyServer(function(input, output, session) {
     # connect to synapse
 
 
-    plateform <- read.table("data/appData/plateform.tsv", header = TRUE , sep = "\t")
+    platform <- read.table("data/appData/plateform.tsv", header = TRUE , sep = "\t")
     row_username <- which(platform$user == input$user_name)
 
     ACfiles <- grep(pattern = "_AC", in.file_ngs$valeur)
