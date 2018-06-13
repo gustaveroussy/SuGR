@@ -18,15 +18,6 @@ if(!require(stringr))
 if(!require(data.table))  
   install.packages("data.table",repos='https://cloud.r-project.org/')
 
-if(!require(digest))  
-  install.packages("digest",repos='https://cloud.r-project.org/')
-
-if(!require(rCGH))
-  BiocInstaller::biocLite("rCGH")
-
-if(!require(cytoScanLinux))
-  BiocInstaller::biocLite("cytoScanLinux")
-
 if(!require(affxparser))
   BiocInstaller::biocLite("affxparser")
 

@@ -1,10 +1,6 @@
 #Input Request size
 options(shiny.maxRequestSize=200*1024^2)
 
-#number of fails for the password
-num_fails_to_lockout <- 3
-
-
 ########### LOADING LIBRARIES ######################################################################################################################
 
 library(shiny)
@@ -14,8 +10,6 @@ library(dplyr)
 library(stringr)
 library(data.table)
 library(digest)
-require(rCGH)
-require(cytoScanLinux)
 require(affxparser)
 library(R.utils)
 require(synapseClient)
@@ -55,6 +49,7 @@ toStop=reactiveValues(status=F)
 dir_file = reactiveValues(val=NULL)
 dir_tmp = reactiveValues(val=NULL)
 
+
 # END OF reactive values ===========================================================================================================================
 #===================================================================================================================================================
 
@@ -79,8 +74,10 @@ shinyServer(function(input, output, session) {
                  br(), br(), br(), br(),
                  uiOutput("uiLogin"),
                  uiOutput("pass"),
-                 uiOutput("connect")
+                 uiOutput("connect"),
+                 uiOutput("login_wrong")
                  )
+                
           
         ),
         hr(),
@@ -99,7 +96,7 @@ shinyServer(function(input, output, session) {
       #create tmp_username folder
       dir_tmp$val=paste0("data/tmpData/")
       if (dir.exists(dir_tmp$val)){
-        file.remove(list.files(dir_tmp$val,full.names=T))
+        unlink(list.files(dir_tmp$val,full.names=T))
         
       } else{
         dir.create(dir_tmp$val)
@@ -108,7 +105,7 @@ shinyServer(function(input, output, session) {
       
       dir_file$val=paste0(dir_tmp$val,input$user_name,"/")
       if (dir.exists(dir_file$val)){
-        file.remove(list.files(dir_file$val,full.names=T))
+        unlink(list.files(dir_file$val,full.names=T))
         
       } else{
         dir.create(dir_file$val)
@@ -153,7 +150,7 @@ shinyServer(function(input, output, session) {
                        br(),br(),
                        DT::dataTableOutput("tablesynIDCEL"), # output list of files to be uploaded on synapse
                        br(),
-                       uiOutput("PurgeListCelButton"), # purge list of files to be uploaded on synapse button
+                       # uiOutput("PurgeListCelButton"), # purge list of files to be uploaded on synapse button
                        br(),br(),br()
                      ), # end of sidebarPanel
                      
@@ -176,7 +173,7 @@ shinyServer(function(input, output, session) {
                        br(),
                        uiOutput("UploadALLCEL"), # upload file on synapse
                        br(),br(),br(),
-                       uiOutput("PurgeListCel"), # purge list of files to upload
+                       # uiOutput("PurgeListCel"), # purge list of files to upload
                        br(),
                        htmlOutput("UploadTextCEL"), # upload on Synapse confirmation
                        br(),
@@ -221,7 +218,7 @@ shinyServer(function(input, output, session) {
                        br(),br(),
                        DT::dataTableOutput("tablesynIDNGS"), # list of files to be uploaded on synapse
                        br(),
-                       uiOutput("PurgeListNgsButton"), # purge list of files to be uploaded on synapse button
+                       # uiOutput("PurgeListNgsButton"), # purge list of files to be uploaded on synapse button
                        br(),br(),br(),  
                        hr(style = 'border-color:darkgrey'),
                        div (style='color:grey',strong ("VC SampleSheet Example")),
@@ -254,7 +251,7 @@ shinyServer(function(input, output, session) {
                        br(),
                        uiOutput("UploadALLNGS"), # upload all the files on synapse
                        br(),
-                       uiOutput("PurgeListNgs"), # purge list of files to be uploaded
+                       # uiOutput("PurgeListNgs"), # purge list of files to be uploaded
                        br(),br(),br(),
                        uiOutput("SaveChanges"), # save changed made on edit table
                        br(),br(),br(),
@@ -340,7 +337,7 @@ shinyServer(function(input, output, session) {
       }
         
     }
-    files.list_cel$valeur=file_list
+    files.list_cel$valeur=file_list[[basename(i)]]
     
     
     output$select_input_cel=renderUI(
@@ -419,8 +416,7 @@ shinyServer(function(input, output, session) {
     if (length(grep (pattern = ".bz2",  innew.file_cel$valeur)) > 0 ) {
       celtodezip <- gsub (pattern = "\\.bz2$", "",  innew.file_cel$valeur)
       dezipcel=NULL
-      
-      withProgress(expr = {try( {dezipcel <- bunzip2( innew.file_cel$valeur, celtodezip , remove = FALSE, skip = TRUE)})
+      withProgress(expr = {try( {dezipcel <- bunzip2(innew.file_cel$valeur, celtodezip , remove = FALSE, skip = TRUE)})
       }, message = "Reading file... Please wait")
       
     } else {
@@ -908,38 +904,38 @@ shinyServer(function(input, output, session) {
   # purge list to upload button ###################################################################################################################
 
 
-  observeEvent(input$file2,{
-
-    output$PurgeListCelButton <- renderUI({
-      mainPanel(
-        actionButton("purge_list_cel", "Purge list to upload"))})
-
-    output$PurgeListCel <- eventReactive(input$purge_list_cel, {
-      files_to_delete = paste0(dir_file$val,"/*")
-      withProgress(expr = {unlink(files_to_delete, recursive=TRUE)}, message = "Deleting tmp file... Please wait")
-      table.synIDCEL$valeur=table.synIDCEL$valeur[0,]
-      print(table.synIDCEL$valeur)
-      shinyjs::disable("tablesynIDCEL")
-      
-    })
-  })
-
-
-  observeEvent(input$file1,{
-
-    output$PurgeListNgsButton <- renderUI({
-      mainPanel(
-        actionButton("purge_list_ngs", "Purge list to upload"))})
-
-    output$PurgeListNgs <- eventReactive(input$purge_list_ngs, {
-      files_to_delete = paste0(dir_file$val,"/*")
-      withProgress(expr = {unlink(files_to_delete, recursive=TRUE)}, message = "Deleting tmp file... Please wait")
-      table.synIDNGS$valeur=table.synIDNGS$valeur[0,]
-      print(table.synIDNGS$valeur)
-      shinyjs::disable("table.synIDNGS")
-      
-    })
-  })
+  # observeEvent(input$file2,{
+  # 
+  #   output$PurgeListCelButton <- renderUI({
+  #     mainPanel(
+  #       actionButton("purge_list_cel", "Purge list to upload"))})
+  # 
+  #   output$PurgeListCel <- eventReactive(input$purge_list_cel, {
+  #     files_to_delete = paste0(dir_file$val,"/*")
+  #     withProgress(expr = {unlink(files_to_delete, recursive=TRUE)}, message = "Deleting tmp file... Please wait")
+  #     table.synIDCEL$valeur=table.synIDCEL$valeur[0,]
+  #     print(table.synIDCEL$valeur)
+  #     shinyjs::disable("tablesynIDCEL")
+  #     
+  #   })
+  # })
+  # 
+  # 
+  # observeEvent(input$file1,{
+  # 
+  #   output$PurgeListNgsButton <- renderUI({
+  #     mainPanel(
+  #       actionButton("purge_list_ngs", "Purge list to upload"))})
+  # 
+  #   output$PurgeListNgs <- eventReactive(input$purge_list_ngs, {
+  #     files_to_delete = paste0(dir_file$val,"/*")
+  #     withProgress(expr = {unlink(files_to_delete, recursive=TRUE)}, message = "Deleting tmp file... Please wait")
+  #     table.synIDNGS$valeur=table.synIDNGS$valeur[0,]
+  #     print(table.synIDNGS$valeur)
+  #     shinyjs::disable("table.synIDNGS")
+  #     
+  #   })
+  # })
 
   
 #====================================================================================================================== purge list to upload button 
@@ -1007,14 +1003,28 @@ shinyServer(function(input, output, session) {
     
     plateform <- read.table("data/appData/plateform.tsv", header = TRUE , sep = "\t")
     row_username <- which(plateform$user == input$user_name)
-    if (length(row_username) == 1){
-    withProgress(expr = {synapseLogin(input$user_name, input$password)}, message = "Connecting to Synapse... Please wait")   
-    user_input$authenticated <- TRUE
+    
+    
+    
+    withProgress(expr = {
+      tryCatch({
+        synapseLogin(input$user_name, input$password)
+        }, error = function(error_condition){
+        output$login_wrong=renderUI(div(style='color:white',div(style = 'background-color:red',
+                                                                  p("Oups... Seems like your user name or password is wrong!"))))
+        user_input$authenticated <- FALSE
+        
+    }, user_input$authenticated <- TRUE)}, message = "Connecting to Synapse... Please wait")
+    
+    if (length(row_username) == 1 && user_input$authenticated!=FALSE){
+      user_input$authenticated <- TRUE
     } else {
       output$connect=renderUI(div(style='color:white',div(style = 'background-color:red',
-                                                                   p("Oups!! Log in incorrect. Please enter your Synapse user name and password. Contact administrator for help."))))
+                                                          p("Oups... Seems like your user name or password is wrong!"))))
       
-    }  
+    }
+   
+    
   })
     output$uiLogin <- renderUI({
     wellPanel(
