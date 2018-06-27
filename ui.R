@@ -28,7 +28,7 @@ library(htmlwidgets)
 
 fluidPage(theme = shinytheme("flatly"),
           
-          titlePanel(div(img(src = "UNICANCER.png", height = 200, width = 200 ), 
+          titlePanel(div(img(src = "UNICANCER.png", height = 150, width = 400 ), 
                          p(style = "text-align:center;font-size:80px;font-weight:bold;color:#19334d;",
                            "SuGR"))),
           

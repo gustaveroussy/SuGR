@@ -1,14 +1,34 @@
-PatId	Global_Conclusion	Manual_Var_Comment	Manual_Var_Classif	Gene_Symbol	Protein_Change	Exon	Variant_Freq	Position_Cov	RefSeq_Id	cDNA_Change	Codon	Chr	Start_Position	End_Position	Strand	Type	Reference_Seq	Variant_Seq	Variant_Cov	MAF_classification	ESP_Freq	by1000G_Freq	DbSNP_Id	COSMIC_Id	Quality	Strand_Bias	Amplicon_Ref							
-T01001		Variant deletere	VP	TP53	p.C141Y	5	7.92	568	NM_000546.5	c.422G>A	141	chr17	7578508	7578508	-	SNP	C	T	45	Missense_Mutation	/	/	/	COSM3378367	 D(P04637-2)	 D(P04637-3)	 D(E9PFT5)	0.5033	AMPL707393388	NA	NA	NA	NA	
-T01001		NA	VNP	BRCA2	p.R324T	10	52.42	578	NM_000059.3	c.971G>C	324	chr13	32906586	32906586	+	SNP	G	C	303	Missense_Mutation	/	/	/	/	 B(A1YBP1)	3145.69	0.5138	NA						
-T01001		NA	0	BRCA2	p.V2466A	14	100	540	NM_000059.3	c.7397T>C	2466	chr13	32929387	32929387	+	SNP	T	C	540	Missense_Mutation	2	2304	97	58	T	NA	8612.91	NA	NA					
-T01001		NA	0	NOTCH4	p.G534S	9	46.86	1129	NM_004557.3.3	c.1600G>A	534	chr6	32185796	32185796	-	SNP	C	T	529	Missense_Mutation	2	5834	3	12	T	B(Q6P3V5)	 B(Q99466)	NA	NA	NA				
-T01001		NA	0	TSC1	p.M322T	10	100	1288	NM_000368.4	c.965T>C	322	chr9	135786904	135786904	-	SNP	A	G	1288	Missense_Mutation	16	5462	13	52	T	B(B7Z604)	 B(B7Z897)	20627	0.5	AMPL557555216	NA	NA	NA	NA
-T01001		NA	0	FGFR4	p.V10I	2	52.12	827	NM_002011.4	c.28G>A	10	chr5	176516631	176516631	+	SNP	G	A	431	Missense_Mutation	17	767	22	88	T	B(B5A965)	 B(B4DVP5)	0.525	AMPL416247268	NA	NA	NA	NA	
-T01001		NA	0	MAP3K1	p.V906I	14	53.75	1373	NM_005921.1	c.2716G>A	906	chr5	56177743	56177743	+	SNP	G	A	738	Missense_Mutation	20	153	70	83	T(Q13233)	B(Q13233)	7785.52	NA	NA					
-T01001		NA	0	FGFR4	p.P136L	4	100	642	NM_002011.4	c.407C>T	136	chr5	176517797	176517797	+	SNP	C	T	642	Missense_Mutation	27	8948	80	73	T	 T	B	10183.9	0.5	AMPL413692792	NA	NA	NA	NA
-T01001		NA	0	NOTCH4	p.D272G	5	100	722	NM_004557.3.3	c.815A>G	272	chr6	32188640	32188640	-	SNP	T	C	722	Missense_Mutation	28	2869	26	78	T	B(Q6P3V5)	 B(Q99466)	NA	NA	NA				
-T01001		NA	0	MAP3K1	p.D806N	14	52.33	1114	NM_005921.1	c.2416G>A	806	chr5	56177443	56177443	+	SNP	G	A	583	Missense_Mutation	34	9883	47	64	T(Q13233)	D(Q13233)	6039.72	NA	NA					
-T01001		NA	0	TP53	p.P72R	4	59.2	527	NM_000546.5	c.215C>G	72	chr17	7579472	7579472	-	SNP	G	C	312	Missense_Mutation	36	9963	54	29	T	B(E7EMR6)	 B(P04637-2)	0.5151	AMPL651471124	NA	NA	NA	NA	
-T01001		NA	0	NOTCH4	p.K117Q	3	46.63	1008	NM_004557.3.3	c.349A>C	117	chr6	32190390	32190390	-	SNP	T	G	470	Missense_Mutation	37	2213	39	88	T	B(Q6P3V5)	 B(Q99466)	NA	NA	NA				
-T01001		NA	0	NOTCH4	p.T320A	6	100	290	NM_004557.3.3	c.958A>G	320	chr6	32188383	32188383	-	SNP	T	C	290	Missense_Mutation	40	237	34	31	T	B(Q6P3V5)	 B(Q99466)	NA	NA	NA				
+Nom du colonne	Example	NB
+PatId                         	B01002	Lettre B ou L suivie de 5 chiffres. Si T  = SAFIR-TOR = Pas accepté
+Chr                           	chr17	chr + numero du chromosome
+Start_Position                	41223094	
+Reference_Seq                 	T	Si SNV, Ref et Var sont représentés par une seule base. 
+Variant_Seq                   	C	
+Global_Conclusion                                                        	 NA   	Ne pas mettre l'accent dans les mots ni caractère spéciaux
+Manual_Var_Comment                                           	 NA   	Ne pas mettre l'accent dans les mots ni caractère spéciaux
+Manual_Var_Classif            	0	"0 = polymorphisme : 1000genome ou ESP >=1 %
+VP = PAS un polymorphisme 1000genome ou ESP <1%) - COSMIC ID present
+VPI = PAS un polymorphisme 1000genome ou ESP <1%) - PAS de COSMIC ID 
+present - predit deletere par au moins 1 outil
+VNP = PAS un polymorphisme 1000genome ou ESP <1%) - PAS de COSMIC ID
+present - PAS predit deletere ==> on retrouve les synonymes dedans"
+Variant_Freq                  	51.8	"Utilise ""point"" mais pas ""virgule""; un chiffre entre 0 et 100"
+Position_Cov                  	396	Utiliser la même qualité de filtres pour cette information et «Variant Cov »
+End_Position                  	41223094	
+Strand                        	-	"utilise ""-"" ou ""+"" ou NA"
+Variant_Cov                   	205	Utiliser la même qualité de filtre pour cette information et « Position Cov »
+Quality                       	2132.79	"Utilise ""point"" mais pas ""virgule"" – Mettre NA si PGM non utilisé"
+Strand_Bias                   	0.5019	"Utilise ""point"" mais pas ""virgule"" – valeur entre 0 et 1"
+Amplicon_Ref                  	AMPL3658889274	
+Gene_Symbol                   	BRCA1	
+Protein_Change                	p.Ser1634Gly	En suivant les recommandations HGVS, reporter les variant avec les amino acides en code 3 lettres
+Exon                          	16	"Mettre juste le numero d'exon mais pas ""exonXX"" /  ""exXX"" "
+RefSeq_Id                     	NM_007300.3	Se limiter à la liste des NM définie pour le projet
+cDNA_Change                   	c.4900A>G	
+Codon                         	1634	Reporter le numéro de l'exon, pas le p.
+Type                          	SNP	"Utilise ""SNP"", ""INS"" ou ""DEL"""
+MAF_classification            	missense_variant	lister tout ce qui est accepter
+ESP_Freq                      	0.326628	"Utilise ""point"" mais pas ""virgule"", version base de données XX"
+by1000G_Freq                  	0.36147757255936674	"Utilise ""point"" mais pas ""virgule"", version base de données XX"
+DbSNP_Id                      	rs1799966	version base de données XX
+COSMIC_Id                     	COSM3755560,COSM3755559	Ne reporter QUE les COSM ID, pas les informations tissus ou autres informations + version base de données XX

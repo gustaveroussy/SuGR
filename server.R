@@ -221,13 +221,13 @@ shinyServer(function(input, output, session) {
                        # uiOutput("PurgeListNgsButton"), # purge list of files to be uploaded on synapse button
                        br(),br(),br(),  
                        hr(style = 'border-color:darkgrey'),
-                       div (style='color:grey',strong ("VC SampleSheet Example")),
+                       div (style='color:grey',strong ("VC Sample Sheet Rules")),
                        br(),
-                       actionButton("tsv", "SampleSheetExample", onclick = "window.open('SampleSheetExample_VC.tsv')"), #downadload samplesheet
+                       actionButton("tsv", "Sample Sheet Rules", onclick = "window.open('SampleSheetExample_VC.tsv')"), #downadload samplesheet
                        hr(style = 'border-color:darkgrey'),
                        div (style='color:grey',strong ("list of HUGO genes name")), # dowload list of genes from HUGO
                        br(),
-                       actionButton("gename", "GeneName", onclick = "window.open('list_genes.txt')")
+                       actionButton("gename", "Gene Name", onclick = "window.open('list_genes.txt')")
                        
                      ), #end of sidebarPanel
                      
@@ -373,7 +373,7 @@ shinyServer(function(input, output, session) {
         
         
         output$CELcheckTOR <- renderText(
-          paste0(div(style='color:white', div(style = 'background-color:green',
+          paste0(div(style='color:black', div(style = 'background-color:#80ff80',
                                               p("The file uploaded", basename(input$uploaded_files_cel), "is a SAFIR02 File")))))
         
       }
@@ -390,14 +390,14 @@ shinyServer(function(input, output, session) {
       if (length(spacegrep) > 0 ) {
         file.rename(in.file_cel$valeur,innew.file_cel$valeur)
         output$CELcheck1 <- renderText(
-          paste0(div(style='color:black', div(style = 'background-color:orange',
+          paste0(div(style='color:black', div(style = 'background-color:#ffb366',
                                               p("!! WARNING !! A special character has been found in file:", 
                                                 basename(in.file_cel$valeur), "It has now been renamed:", basename(innew.file_cel$valeur))))))
         
       } else{
         
         output$CELcheck1 <- renderText(
-          paste0(div(style='color:white', div(style = 'background-color:green',
+          paste0(div(style='color:black', div(style = 'background-color:#80ff80',
                                               p(basename(in.file_cel$valeur),"name is good")))))
         in.file_cel$valeur <- innew.file_cel$valeur
         
@@ -586,7 +586,7 @@ shinyServer(function(input, output, session) {
     } else {
       
       output$NGScheckTOR <- renderText(
-        paste0(div(style='color:white', div(style = 'background-color:green',
+        paste0(div(style='color:black', div(style = 'background-color:#80ff80',
                                             p("The file uploaded", basename(input$uploaded_files_ngs), "is a SAFIR02 File")))))
     } 
     
@@ -608,7 +608,7 @@ shinyServer(function(input, output, session) {
       file.rename(in.file_ngs$valeur,innew.file_ngs$valeur )
       
       output$NGScheckName <- renderText(
-        paste0(div(style='color:black', div(style = 'background-color:orange',
+        paste0(div(style='color:black', div(style = 'background-color:#ffb366',
                                             p("!! WARNING !! A special character has been found in file:", 
                                               basename(in.file_ngs$valeur),"It has now been renamed",basename(innew.file_ngs$valeur) )))))
       
@@ -616,7 +616,7 @@ shinyServer(function(input, output, session) {
     } else{
       
       output$NGScheckName <- renderText(
-        paste0(div(style='color:white', div(style = 'background-color:green',
+        paste0(div(style='color:black', div(style = 'background-color:#80ff80',
                                             p(basename(in.file_ngs$valeur),"name is good")))))
       
       innew.file_ngs$valeur  <- in.file_ngs$valeur
@@ -660,10 +660,11 @@ shinyServer(function(input, output, session) {
       
       df <- files.list_ngs$valeur[[basename(in.file_ngs$valeur)]]
       final = NULL
-      try({final <- subset(df, select=c(PatId,Global_Conclusion,Manual_Var_Comment,Manual_Var_Classif,Gene_Symbol,Protein_Change,Exon,
-                                   Variant_Freq,Position_Cov,RefSeq_Id,cDNA_Change,Codon,Chr,Start_Position,End_Position,
-                                   Strand,Type,Reference_Seq,Variant_Seq,Variant_Cov,MAF_classification,ESP_Freq,by1000G_Freq,
-                                   DbSNP_Id,COSMIC_Id,Quality,Strand_Bias,Amplicon_Ref))})
+      try({final <- subset(df, select=c(PatId,Chr,Start_Position,Reference_Seq,Variant_Seq,Global_Conclusion,
+                                        Manual_Var_Comment,Manual_Var_Classif,Variant_Freq,
+                                        Position_Cov,End_Position,Strand,Variant_Cov,Quality,Strand_Bias,
+                                        Amplicon_Ref,Gene_Symbol,Protein_Change,Exon,RefSeq_Id,
+                                        cDNA_Change,Codon,Type,MAF_classification,ESP_Freq,by1000G_Freq,DbSNP_Id,COSMIC_Id))})
       if(is.null(final)){
         output$select_input_ngs <- renderUI(div(style='color:white',div(style = 'background-color:red',
                                                                         p("Oups!! The file format is incorrect please try again"))))
@@ -684,7 +685,7 @@ shinyServer(function(input, output, session) {
       
       if (length(grep(paste(pattern, collapse = "|"), columns) > 0)){
         output$NGScheckColumn <- renderText(
-          paste0(div(style='color:black', div(style = 'background-color:orange', p("!!!! WARNING !!!!",basename(innew.file_ngs$valeur),"Columns have been changed.", 
+          paste0(div(style='color:black', div(style = 'background-color:#ffb366', p("!!!! WARNING !!!!",basename(innew.file_ngs$valeur),"Columns have been changed.", 
                                                                                 strong("Please download the new table.")))))) 
         
         
@@ -692,7 +693,7 @@ shinyServer(function(input, output, session) {
       }  else {
         
         output$NGScheckColumn <- renderText(
-          paste0(div(style='color:white', div(style = 'background-color:green', p("Columns are ok.")))))
+          paste0(div(style='color:black', div(style = 'background-color:#80ff80', p("Columns are ok.")))))
         
       } 
     }
@@ -733,20 +734,20 @@ shinyServer(function(input, output, session) {
       TEST = (as.character(difference))
       lenrow <- nrow(difference)
 
-      if (lenrow > 0) {
-        output$NGScheckGene <- renderText(
-          paste0(div(style='color:white', div(style = 'background-color:red',
-                                              p("!!! WARNING !!! Gene typo wrong,
-                                                please check gene name nomenclature and edit the table")))))
+      # if (lenrow > 0) {
+      #   output$NGScheckGene <- renderText(
+      #     paste0(div(style='color:white', div(style = 'background-color:red',
+      #                                         p("!!! WARNING !!! Gene typo wrong,
+      #                                           please check gene name nomenclature and edit the table")))))
+      # 
 
 
-
-      } else {
-        output$NGScheckGene <- renderText(
-          paste0(div(style='color:white', div(style = 'background-color:green', p("Gene name ok")))))
-
-
-      }
+      # } else {
+      #   output$NGScheckGene <- renderText(
+      #     paste0(div(style='color:white', div(style = 'background-color:green', p("Gene name ok")))))
+      # 
+      # 
+      # }
     }
     }
   }) #======================================================================================================================= end of checking gene
@@ -757,7 +758,9 @@ shinyServer(function(input, output, session) {
   observeEvent(input$uploaded_files_ngs,{
     ACfiles <- grep(pattern = "_AC", in.file_ngs$valeur)
     if (length(ACfiles) > 0 ) {
-
+      output$NGScheckGene <- renderText(
+        paste0(div(style='color:white', div(style = 'background-color:white',
+                                            p("")))))
    
     } else {
 
@@ -800,21 +803,148 @@ shinyServer(function(input, output, session) {
         difference <- lapply(1:ncol(gene_symbol),function(i)setdiff(gene_symbol[,i],gene[,i]))
         list_gene <- unlist(difference)
         
-       rhandsontable(DF, list_gene = list_gene, height = 550) %>%
+        DF = as.data.frame(apply(DF, 2, function(x)gsub(",", "\\.", x)))
+        DF = as.data.frame(apply(DF, 2, function(x)gsub("exon|ex", "", x)))
+        DF = as.data.frame(apply(DF, 2, function(x)gsub("é|è|ê|�", "e", x)))
+        DF = as.data.frame(apply(DF, 2, function(x)gsub("à|�", "a", x)))
+        DF = as.data.frame(apply(DF, 2, function(x)gsub("\\(|\\)|\\:|\\,|\\/|\\=|\\'|�", " ", x)))
+        DF = as.data.frame(apply(DF, 2, function(x)gsub("ù|�", "u", x)))
+        DF = as.data.frame(cbind(DF[1:21],apply(DF["Codon"],2, function(x)gsub("p","",x)),DF[23:28]))
+        
+        PatId <- DF["PatId"]
+        PatId_to_color = as.character(unlist(sapply(1:ncol(PatId),function(i)(grep("^$|B[0-9]{5}|L[0-9]{5}",PatId[,i], value = TRUE, invert = TRUE)))))
+
+
+        Chr <- DF["Chr"]
+        Chr_to_color = as.character(unlist(sapply(1:ncol(Chr),function(i)(grep("^$|chr1|chr2|chr3|chr4|chr5|chr6|chr7|chr8|chr9|chr10|chr11|chr12|chr13|chr14|chr15|chr16|chr17|chr18|chr19|chr20|chr21",Chr[,i], value = TRUE, invert = TRUE)))))
+
+
+        Manual_Var_Classif <- DF["Manual_Var_Classif"]
+        Manual_Var_Classif_to_color =  as.character(unlist(sapply(1:ncol(Manual_Var_Classif),function(i)(grep("^$|0|VP|VPI|VNP", Manual_Var_Classif[,i], value = TRUE, invert = TRUE)))))
+
+
+        Variant_Freq <- DF["Variant_Freq"]
+        Variant_Freq_space <- apply(Variant_Freq, 2, function(x)gsub(" ", "", x))
+        Variant_Freq_zero = as.matrix(as.numeric(apply(Variant_Freq_space, 2,function(x)gsub("-\\d", "0", x, perl = TRUE))))
+        Variant_Freq_index = sapply(1:ncol(Variant_Freq_zero),function(i)(Variant_Freq_zero[,i] > 100.01 | Variant_Freq_zero[,i] <= 0 ))
+        Variant_Freq_to_color = as.character(Variant_Freq_space[which(Variant_Freq_index == TRUE),])
+
+
+        Strand <- DF["Strand"]
+        Strand_to_color =  as.character(unlist(sapply(1:ncol(Strand),function(i)(grep("^$|\\-|\\+|NA", Strand[,i], value = TRUE, invert = TRUE)))))
+
+
+        Strand_Bias <- DF["Strand_Bias"]
+        Strand_Bias_zero = apply(Strand_Bias,2,function(x){ifelse(x<0,0,x)})
+        Stran_Bias_index = sapply(1:ncol(Strand_Bias_zero),function(i)(Strand_Bias_zero[,i] > 1 | Strand_Bias_zero[,i] <= 0 ))
+        Strand_Bias_to_color = as.character(Strand_Bias[which(Stran_Bias_index == TRUE),])
+
+        Protein_Change <- DF["Protein_Change"]
+        Protein_Change_to_color =  as.character(unlist(sapply(1:ncol(Protein_Change),function(i)(grep("^$|p.(Arg|Asn|Asp|Asx|Cys|Glu|Gln|Glx|Gly|His|Ile|Leu|Lys|Met|Phe|Pro|Ser|Thr|Trp|Tyr|Val)(.*)(Arg|Asn|Asp|Asx|Cys|Glu|Gln|Glx|Gly|His|Ile|Leu|Lys|Met|Phe|Pro|Ser|Thr|Trp|Tyr|Val)", Protein_Change[,i], value = TRUE, invert = TRUE)))))
+
+
+        Type <- DF["Type"]
+        Type_to_color = as.character(unlist(sapply(1:ncol(Type),function(i)(grep("^$|SNP|INS|DEL", Type[,i], value = TRUE, invert = TRUE)))))
+
+
+
+
+        Reference_Seq <- DF["Reference_Seq"]
+        Variant_Seq <- DF["Variant_Seq"]
+
+
+        TypeSNP <- as.character(unlist(sapply(1:ncol(Type),function(i)(grep("SNP", Type[,i])))))
+        Reference_Seq_SNP <- as.character(Reference_Seq[TypeSNP,])
+        Reference_Seq_to_color <- grep("^$|\\bA\\b|\\bT\\b|\\bC\\b|\\bG\\b", Reference_Seq_SNP, value = TRUE, invert = TRUE)
+        Variant_Seq_SNP <- as.character(Variant_Seq[TypeSNP,])
+        Variant_Seq_to_color <- grep("^$|\\bA\\b|\\bT\\b|\\bC\\b|\\bG\\b", Variant_Seq_SNP, value = TRUE, invert = TRUE)
+
+
+
+
+        if (!is.null(list_gene) | !is.null(PatId_to_color) | !is.null(Chr_to_color) | !is.null(Manual_Var_Classif_to_color) | !is.null(Variant_Freq_to_color) | !is.null(Strand_to_color) | !is.null(Strand_Bias_to_color) | !is.null(Protein_Change_to_color) | !is.null(Type_to_color) | !is.null(Reference_Seq_to_color) | !is.null(Variant_Seq_to_color)){
+        output$NGScheckGene <- renderText(
+          paste0(div(style='color:white', div(style = 'background-color:red',
+                                              p("!!! WARNING !!! Some cells do not comply. Please check the table below and the Sample Sheet Rules to correct the table.")))))
+
+        } else {
+          output$NGScheckGene <- renderText(
+            paste0(div(style='color:black', div(style = 'background-color:#80ff80',
+                                                p("Your file is good to go")))))
+        }
+
+       rhandsontable(DF, list_gene = list_gene, PatId_to_color = PatId_to_color, Chr_to_color = Chr_to_color, Manual_Var_Classif_to_color = Manual_Var_Classif_to_color, Variant_Freq_to_color = Variant_Freq_to_color, Strand_to_color = Strand_to_color, Strand_Bias_to_color = Strand_Bias_to_color, Protein_Change_to_color = Protein_Change_to_color, Type_to_color = Type_to_color, Reference_Seq_to_color = Reference_Seq_to_color, Variant_Seq_to_color = Variant_Seq_to_color, height = 400) %>%
           hot_table(highlightCol = TRUE, highlightRow = TRUE, allowRowEdit=TRUE) %>%
           hot_col(col = c("Manual_Var_Comment","Manual_Var_Classif","Gene_Symbol","Protein_Change","Exon","Variant_Freq",
                           "Position_Cov","RefSeq_Id","cDNA_Change","Codon","Chr","Start_Position","End_Position","Strand","Type","Reference_Seq","Variant_Seq",
                           "Variant_Cov","MAF_classification","ESP_Freq","by1000G_Freq","DbSNP_Id","COSMIC_Id","Quality","Strand_Bias","Amplicon_Ref"),
                   type = "autocomplete") %>%
+         hot_col(col = "Chr", type = "dropdown", source = c("chr1","chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", "chr9", "chr10",
+                                                            "chr11", "chr12", "chr13", "chr14", "chr15", "chr16", "chr17", "chr18", "chr19", "chr20", "chr21")) %>%
+         hot_col(col = "Manual_Var_Classif", type = "dropdown", source = c("0","VP","VPI","VNP")) %>%
+         hot_col(col = "Strand", type = "dropdown", source = c("-","+","NA")) %>%
+         hot_col(col = "Type", type = "dropdown", source = c("SNP","INS","DEL")) %>%
+
           hot_cols(renderer = "function(instance, td, row, col, prop, value, cellProperties) {
                    Handsontable.renderers.TextRenderer.apply(this, arguments);
-                   if (instance.params) {
-                   mhrows = instance.params.list_gene;
-                   mhrows = mhrows instanceof Array ? mhrows : [mhrows];
-                   }
-                   if (instance.params && mhrows.includes(value)) td.style.background = 'red';
+
+
+                  if (instance.params) {
+                  mhrows_list_gene = instance.params.list_gene;
+                  mhrows_list_gene = mhrows_list_gene instanceof Array ? mhrows_list_gene : [mhrows_list_gene];
+
+                  mhrows_PatId_to_color = instance.params.PatId_to_color;
+                  mhrows_PatId_to_color = mhrows_PatId_to_color instanceof Array ? mhrows_PatId_to_color : [mhrows_PatId_to_color];
+
+                  mhrows_Chr_to_color = instance.params.Chr_to_color;
+                  mhrows_Chr_to_color = mhrows_Chr_to_color instanceof Array ? mhrows_Chr_to_color : [mhrows_Chr_to_color];
+
+                  mhrows_Variant_Freq_to_color = instance.params.Variant_Freq_to_color;
+                  mhrows_Variant_Freq_to_color = mhrows_Variant_Freq_to_color instanceof Array ? mhrows_Variant_Freq_to_color : [mhrows_Variant_Freq_to_color];
+
+                  mhrows_Strand_to_color = instance.params.Strand_to_color;
+                  mhrows_Strand_to_color = mhrows_Strand_to_color instanceof Array ? mhrows_Strand_to_color : [mhrows_Strand_to_color];
+
+                  mhrows_Strand_Bias_to_color = instance.params.Strand_Bias_to_color;
+                  mhrows_Strand_Bias_to_color = mhrows_Strand_Bias_to_color instanceof Array ? mhrows_Strand_Bias_to_color : [mhrows_Strand_Bias_to_color];
+
+                  mhrows_Protein_Change_to_color = instance.params.Protein_Change_to_color;
+                  mhrows_Protein_Change_to_color = mhrows_Protein_Change_to_color instanceof Array ? mhrows_Protein_Change_to_color : [mhrows_Protein_Change_to_color];
+
+                  mhrows_Type_to_color = instance.params.Type_to_color;
+                  mhrows_Type_to_color = mhrows_Type_to_color instanceof Array ? mhrows_Type_to_color : [mhrows_Type_to_color];
+
+                  mhrows_Manual_Var_Classif_to_color = instance.params.Manual_Var_Classif_to_color;
+                  mhrows_Manual_Var_Classif_to_color = mhrows_Manual_Var_Classif_to_color instanceof Array ? mhrows_Manual_Var_Classif_to_color : [mhrows_Manual_Var_Classif_to_color];
+
+                  mhrows_Reference_Seq_to_color = instance.params.Reference_Seq_to_color;
+                  mhrows_Reference_Seq_to_color = mhrows_Reference_Seq_to_color instanceof Array ? mhrows_Reference_Seq_to_color : [mhrows_Reference_Seq_to_color];
+
+                  mhrows_Variant_Seq_to_color = instance.params.Variant_Seq_to_color;
+                  mhrows_Variant_Seq_to_color = mhrows_Variant_Seq_to_color instanceof Array ? mhrows_Variant_Seq_to_color : [mhrows_Variant_Seq_to_color];
+
+
+
+}
+                if (instance.params && mhrows_list_gene.includes(value)) td.style.background = '#ff8080';
+                if (instance.params && mhrows_PatId_to_color.includes(value)) td.style.background = 'red';
+                if (instance.params && mhrows_Chr_to_color.includes(value)) td.style.background = 'yellow';
+                if (instance.params && mhrows_Manual_Var_Classif_to_color.includes(value)) td.style.background = 'blue';
+                if (instance.params && mhrows_Variant_Freq_to_color.includes(value)) td.style.background = 'orange';
+                if (instance.params && mhrows_Strand_to_color.includes(value)) td.style.background = 'green';
+                if (instance.params && mhrows_Strand_Bias_to_color.includes(value)) td.style.background = 'brown';
+                if (instance.params && mhrows_Protein_Change_to_color.includes(value)) td.style.background = '#00ffff';
+                if (instance.params && mhrows_Type_to_color.includes(value)) td.style.background = 'purple';
+                if (instance.params && mhrows_Reference_Seq_to_color.includes(value)) td.style.background = 'grey';
+                if (instance.params && mhrows_Variant_Seq_to_color.includes(value)) td.style.background = 'black';
+
+
+
+
       }"
         )
+
+
         }
     })
 
