@@ -48,7 +48,7 @@ dezip.cel = reactiveValues(valeur=NULL)
 toStop=reactiveValues(status=F)
 dir_file = reactiveValues(val=NULL)
 dir_tmp = reactiveValues(val=NULL)
-
+DF.table = reactiveValues(val=NULL)
 
 # END OF reactive values ===========================================================================================================================
 #===================================================================================================================================================
@@ -61,7 +61,7 @@ dir_tmp = reactiveValues(val=NULL)
 # server ###########################################################################################################################################
 
 shinyServer(function(input, output, session) {
-  
+
   #### UI code --------------------------------------------------------------
   output$ui <- renderUI({
     if (user_input$authenticated == FALSE) {
@@ -115,6 +115,7 @@ shinyServer(function(input, output, session) {
       # Define UI for data upload app -------------------------------------------------------
       
       jscode <- "shinyjs.closeWindow = function() { window.close(); }"
+      
       ui <- fluidPage(
         useShinyjs(),
         extendShinyjs(text = jscode, functions = c("closeWindow")),
@@ -130,7 +131,7 @@ shinyServer(function(input, output, session) {
           
           
           #Input for CEL ############################################################################################################################
-          tabPanel(p(style = "font-size:20px;font-weight:bold","CEL"),
+          tabPanel(title = p(style = "font-size:20px;font-weight:bold","CEL"),
                    sidebarLayout(
                      
                      # Sidebar panel for inputs --------------------------------------------------------
@@ -225,7 +226,7 @@ shinyServer(function(input, output, session) {
                        br(),
                        actionButton("tsv", "Sample Sheet Rules", onclick = "window.open('SampleSheetExample_VC.tsv')"), #downadload samplesheet
                        hr(style = 'border-color:darkgrey'),
-                       div (style='color:grey',strong ("list of HUGO genes name")), # dowload list of genes from HUGO
+                       div (style='color:grey',strong ("List of HUGO genes name")), # dowload list of genes from HUGO
                        br(),
                        actionButton("gename", "Gene Name", onclick = "window.open('list_genes.txt')")
                        
@@ -241,19 +242,16 @@ shinyServer(function(input, output, session) {
                        br(),
                        htmlOutput("NGScheckTOR"), # check if TOR
                        br(),
-                       htmlOutput("NGScheckColumn"), # check columns
-                       br(),
                        htmlOutput("NGScheckGene"), # check gene name
-                       br(),
-                       br(),
-                       br(),
+                       br(),br(),br(),
                        uiOutput("UploadButtonALLNGS"), # upload file on Synapse button
                        br(),
                        uiOutput("UploadALLNGS"), # upload all the files on synapse
-                       br(),
-                       # uiOutput("PurgeListNgs"), # purge list of files to be uploaded
-                       br(),br(),br(),
+                       br(),br(),br(),br(),
                        uiOutput("SaveChanges"), # save changed made on edit table
+                       br(),br(),br(),
+                       uiOutput("Downloading"),
+                       uiOutput("DownLoadNGS"), 
                        br(),br(),br(),
                        rHandsontableOutput("hot") # table to be edited
                        
@@ -294,10 +292,7 @@ shinyServer(function(input, output, session) {
   
   
   
-  
-  
-  
-  
+
   
   
   
@@ -319,12 +314,17 @@ shinyServer(function(input, output, session) {
   ####################
   
   
+ 
+ 
+  
   # create folder tmp and create dropdown menu with all the inputs selected ------------------------------------------------------------------------
   observeEvent(input$file2, {
     
+    table_synIDCEL = read.table("credentials/table_syn.tsv", header = TRUE , sep = "\t")
+    table.synIDCEL$valeur = table_synIDCEL
     
     
-    #file.remove(list.files(dir_file$val,full.names = T))
+    file.remove(list.files(dir_file$val,full.names = T))
     file.copy(from = input$file2$datapath,to = paste0(dir_file$val,input$file2$name))
     files=list.files(dir_file$val,full.names =T) 
     file_list=list()
@@ -470,11 +470,6 @@ shinyServer(function(input, output, session) {
   
   # upload to synapse ---------------------------------------------------------------------------------------------------------------------------
   
-  
-  table_synIDCEL = read.table("credentials/table_syn.tsv", header = TRUE , sep = "\t")
-  table.synIDCEL$valeur = table_synIDCEL
-  
-  
   observeEvent(input$uploaded_files_cel,{
     
     if(!toStop$status){
@@ -484,7 +479,7 @@ shinyServer(function(input, output, session) {
     
     table.synIDCEL$valeur <- table.synIDCEL$valeur[!duplicated(table.synIDCEL$valeur[,c('inputfile')]),]
     table.synIDCEL$valeur <- table.synIDCEL$valeur[grep("T[0-9]", table.synIDCEL$valeur$inputfile, invert = TRUE),]
-    print(table.synIDCEL$valeur)
+    
     
     output$UploadButtonALLCEL <- renderUI({
       mainPanel(
@@ -501,6 +496,7 @@ shinyServer(function(input, output, session) {
         file <- File(infile, parentId=synID)
         withProgress(expr = {file <- synStore(file)}, message = "Uploading to Synapse... Please wait")
       }
+      
     })
     }
     
@@ -536,9 +532,11 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$file1,{
     
+    table_synIDNGS = read.table("credentials/table_syn.tsv", header = TRUE , sep = "\t")
+    table.synIDNGS$valeur = table_synIDNGS
     
     
-    #file.remove(list.files(dir_file$val,full.names = T))
+    file.remove(list.files(dir_file$val,full.names = T))
     file.copy(from = input$file1$datapath,to = paste0(dir_file$val,input$file1$name))
     files=list.files(dir_file$val,full.names =T) 
     file_list=list()
@@ -581,7 +579,6 @@ shinyServer(function(input, output, session) {
         paste0(div(style='color:white', div(style = 'background-color:red',
                                             p("!!! WARNING !!! The file uploaded", basename(input$uploaded_files_ngs), "is a SAFIR02-Tor File")))))
       output$NGScheckName<-renderUI(p(""))
-      output$NGScheckColumn<-renderUI(p(""))
       output$NGScheckGene<-renderUI(p(""))
     } else {
       
@@ -643,9 +640,7 @@ shinyServer(function(input, output, session) {
     ACfiles <- grep(pattern = "_AC", in.file_ngs$valeur)
     if (length(ACfiles) > 0 ) {
       
-      
-      
-      
+     
       output$hot <- renderRHandsontable({
 
                 df <- files.list_ngs$valeur[[basename(in.file_ngs$valeur)]]
@@ -671,7 +666,7 @@ shinyServer(function(input, output, session) {
         output$NGScheckTOR=renderUI(p(""))
         output$NGScheckName=renderUI(p(""))
         output$NGScheckGene=renderUI(p(""))
-        output$NGScheckColumn=renderUI(p(""))
+        
         toStop$status=T
       } else {
         toStop$status=F
@@ -683,19 +678,7 @@ shinyServer(function(input, output, session) {
       columns <- colnames(df)
       
       
-      if (length(grep(paste(pattern, collapse = "|"), columns) > 0)){
-        output$NGScheckColumn <- renderText(
-          paste0(div(style='color:black', div(style = 'background-color:#ffb366', p("!!!! WARNING !!!!",basename(innew.file_ngs$valeur),"Columns have been changed.", 
-                                                                                strong("Please download the new table.")))))) 
-        
-        
-        
-      }  else {
-        
-        output$NGScheckColumn <- renderText(
-          paste0(div(style='color:black', div(style = 'background-color:#80ff80', p("Columns are ok.")))))
-        
-      } 
+     
     }
     }
   }) #================================================================================================================================= end of else 
@@ -721,7 +704,7 @@ shinyServer(function(input, output, session) {
         output$NGScheckTOR=renderUI(p(""))
         output$NGScheckName=renderUI(p(""))
         output$NGScheckGene =renderUI(p(""))
-        output$NGScheckColumn=renderUI(p(""))
+        
         toStop$status=T
       }else{
         
@@ -734,20 +717,7 @@ shinyServer(function(input, output, session) {
       TEST = (as.character(difference))
       lenrow <- nrow(difference)
 
-      # if (lenrow > 0) {
-      #   output$NGScheckGene <- renderText(
-      #     paste0(div(style='color:white', div(style = 'background-color:red',
-      #                                         p("!!! WARNING !!! Gene typo wrong,
-      #                                           please check gene name nomenclature and edit the table")))))
-      # 
-
-
-      # } else {
-      #   output$NGScheckGene <- renderText(
-      #     paste0(div(style='color:white', div(style = 'background-color:green', p("Gene name ok")))))
-      # 
-      # 
-      # }
+   
     }
     }
   }) #======================================================================================================================= end of checking gene
@@ -811,6 +781,52 @@ shinyServer(function(input, output, session) {
         DF = as.data.frame(apply(DF, 2, function(x)gsub("ù|�", "u", x)))
         DF = as.data.frame(cbind(DF[1:21],apply(DF["Codon"],2, function(x)gsub("p","",x)),DF[23:28]))
         
+        Protein_Change <- DF["Protein_Change"]
+        Protein_Change_character <- as.character(unlist(Protein_Change))
+        
+        
+        AAStart <- c("\\.A","\\.G","\\.L","\\.P","\\.B","\\.C","\\.D","\\.E","\\.F","\\.H","\\.I","\\.K","\\.M","\\.N",
+                     "\\.Q","\\.R","\\.S","\\.T","\\.U","\\.V","\\.W","\\.X","\\.Y","\\.Z")
+        AAThreeStart <- c(".Ala",".Gly",".Leu",".Pro",".Asx",".Cys",".Asp",".Glu",".Phe",".His",".Ile",".Lys",".Met",".Asn",".Gln",".Arg",".Ser",".Thr",
+                          ".Sec",".Val",".Trp",".Xaa",".Tyr",".Glx")
+        
+        AAEnd <- c("A$","G$","L$","P$","B$","C$","D$","E$","F$","H$","I$","K$","M$","N$",
+                   "Q$","R$","S$","T$","U$","V$","W$","X$","Y$","Z$")
+        AAThreeEnd <- c("Ala","Gly","Leu","Pro","Asx","Cys","Asp","Glu","Phe","His","Ile","Lys","Met","Asn","Gln","Arg","Ser","Thr",
+                        "Sec","Val","Trp","Xaa","Tyr","Glx")
+        
+        AABis <- c("Alala","Asxsx","Cysys","Aspsp","Glulu","Phehe","Glyly","Hisis","Ilele","Lysys","Leueu","Metet","Asnsn","Proro","Glnln","Argrg","Serer","Thrhr",
+                   "Secec","Valal","Trprp","Xaaaa","Tyryr","Glxlx")
+        AATer <- c("Ala","Asx","Cys","Asp","Glu","Phe","Gly","His","Ile","Lys","Leu","Met","Asn","Pro","Gln","Arg","Ser","Thr","Sec","Val","Trp","Xaa","Tyr","Glx")
+        
+        
+        Replace_AAStart_func <- function(Protein_Change_character){
+          for(j in seq_along(AAStart)) Protein_Change_character = gsub(AAStart[j], AAThreeStart[j], Protein_Change_character)
+          return(Protein_Change_character)
+        }
+        
+        Protein_Change_AAStart <- Replace_AAStart_func(Protein_Change_character)
+        
+        Replace_AAEnd_func <- function(Protein_Change_AAStart){
+          for(j in seq_along(AAEnd)) Protein_Change_AAStart = gsub(AAEnd[j], AAThreeEnd[j], Protein_Change_AAStart)
+          return(Protein_Change_AAStart)
+        }
+        
+        Protein_Change_AAEnd <- Replace_AAEnd_func(Protein_Change_AAStart)
+        
+        Replace_AABis_func <- function(Protein_Change_AAEnd){
+          for(j in seq_along(AABis)) Protein_Change_AAEnd = gsub(AABis[j], AATer[j], Protein_Change_AAEnd)
+          return(Protein_Change_AAEnd)
+        }
+        
+        Protein_Change_AABis <- as.data.frame(Replace_AABis_func(Protein_Change_AAEnd))
+        
+        colnames(Protein_Change_AABis) <- "Protein_Change"
+
+        DF = as.data.frame(cbind(DF[1:17],Protein_Change_AABis,DF[19:28]))
+
+        
+        
         PatId <- DF["PatId"]
         PatId_to_color = as.character(unlist(sapply(1:ncol(PatId),function(i)(grep("^$|B[0-9]{5}|L[0-9]{5}",PatId[,i], value = TRUE, invert = TRUE)))))
 
@@ -839,14 +855,12 @@ shinyServer(function(input, output, session) {
         Stran_Bias_index = sapply(1:ncol(Strand_Bias_zero),function(i)(Strand_Bias_zero[,i] > 1 | Strand_Bias_zero[,i] <= 0 ))
         Strand_Bias_to_color = as.character(Strand_Bias[which(Stran_Bias_index == TRUE),])
 
-        Protein_Change <- DF["Protein_Change"]
-        Protein_Change_to_color =  as.character(unlist(sapply(1:ncol(Protein_Change),function(i)(grep("^$|p.(Arg|Asn|Asp|Asx|Cys|Glu|Gln|Glx|Gly|His|Ile|Leu|Lys|Met|Phe|Pro|Ser|Thr|Trp|Tyr|Val)(.*)(Arg|Asn|Asp|Asx|Cys|Glu|Gln|Glx|Gly|His|Ile|Leu|Lys|Met|Phe|Pro|Ser|Thr|Trp|Tyr|Val)", Protein_Change[,i], value = TRUE, invert = TRUE)))))
 
+        Protein_Change_NewAA <- DF["Protein_Change"]
+        Protein_Change_to_color =  as.character(unlist(sapply(1:ncol(Protein_Change_NewAA),function(i)(grep("\\s|^$|^p.(Ala|Asx|Cys|Asp|Glu|Phe|Gly|His|Ile|Lys|Leu|Met|Asn|Pro|Gln|Arg|Ser|Thr|Sec|Val|Trp|Xaa|Tyr|Glx)(.*)(Ala$|Asx$|Cys$|Asp$|Glu$|Phe$|Gly$|His$|Ile$|Lys$|Leu$|Met$|Asn$|Pro$|Gln$|Arg$|Ser$|Thr$|Sec$|Val$|Trp$|Xaa$|Tyr$|Glx$)", Protein_Change_NewAA[,i], value = TRUE, invert = TRUE, perl = TRUE)))))
 
         Type <- DF["Type"]
         Type_to_color = as.character(unlist(sapply(1:ncol(Type),function(i)(grep("^$|SNP|INS|DEL", Type[,i], value = TRUE, invert = TRUE)))))
-
-
 
 
         Reference_Seq <- DF["Reference_Seq"]
@@ -858,21 +872,32 @@ shinyServer(function(input, output, session) {
         Reference_Seq_to_color <- grep("^$|\\bA\\b|\\bT\\b|\\bC\\b|\\bG\\b", Reference_Seq_SNP, value = TRUE, invert = TRUE)
         Variant_Seq_SNP <- as.character(Variant_Seq[TypeSNP,])
         Variant_Seq_to_color <- grep("^$|\\bA\\b|\\bT\\b|\\bC\\b|\\bG\\b", Variant_Seq_SNP, value = TRUE, invert = TRUE)
+        
+        # message("1\n",list_gene,"2\n",PatId_to_color,"3\n",Chr_to_color,"4\n",Manual_Var_Classif_to_color,"5\n",Variant_Freq_to_color,"6\n",Strand_to_color,
+        #         "7\n",Strand_Bias_to_color,"8\n",Protein_Change_to_color,"9\n",Type_to_color,"10\n",Reference_Seq_to_color,"11\n",Variant_Seq_to_color)
 
+        
 
-
-
-        if (!is.null(list_gene) | !is.null(PatId_to_color) | !is.null(Chr_to_color) | !is.null(Manual_Var_Classif_to_color) | !is.null(Variant_Freq_to_color) | !is.null(Strand_to_color) | !is.null(Strand_Bias_to_color) | !is.null(Protein_Change_to_color) | !is.null(Type_to_color) | !is.null(Reference_Seq_to_color) | !is.null(Variant_Seq_to_color)){
-        output$NGScheckGene <- renderText(
-          paste0(div(style='color:white', div(style = 'background-color:red',
-                                              p("!!! WARNING !!! Some cells do not comply. Please check the table below and the Sample Sheet Rules to correct the table.")))))
-
-        } else {
+        if (identical(list_gene, character(0)) == TRUE | identical(PatId_to_color, character(0)) == TRUE | identical(Chr_to_color, character(0)) == TRUE | 
+            identical(Manual_Var_Classif_to_color, character(0)) == TRUE | identical(Variant_Freq_to_color, character(0)) == TRUE | identical(Strand_to_color, character(0)) == TRUE | 
+            identical(Strand_Bias_to_color, character(0)) == TRUE | identical(Protein_Change_to_color, character(0)) == TRUE | identical(Type_to_color, character(0)) == TRUE | 
+            identical(Reference_Seq_to_color, character(0)) == TRUE | identical(Variant_Seq_to_color, character(0) == TRUE)){
+        
           output$NGScheckGene <- renderText(
             paste0(div(style='color:black', div(style = 'background-color:#80ff80',
                                                 p("Your file is good to go")))))
+            
+        } else {
+          
+          output$NGScheckGene <- renderText(
+            paste0(div(style='color:white', div(style = 'background-color:red',
+                                                p("!!! WARNING !!! Some cells do not comply. 
+                                                  Please check the table below and the Sample Sheet Rules to correct the table.")))))
+          
         }
-
+      
+        DF.table$valeur = DF
+        
        rhandsontable(DF, list_gene = list_gene, PatId_to_color = PatId_to_color, Chr_to_color = Chr_to_color, Manual_Var_Classif_to_color = Manual_Var_Classif_to_color, Variant_Freq_to_color = Variant_Freq_to_color, Strand_to_color = Strand_to_color, Strand_Bias_to_color = Strand_Bias_to_color, Protein_Change_to_color = Protein_Change_to_color, Type_to_color = Type_to_color, Reference_Seq_to_color = Reference_Seq_to_color, Variant_Seq_to_color = Variant_Seq_to_color, height = 400) %>%
           hot_table(highlightCol = TRUE, highlightRow = TRUE, allowRowEdit=TRUE) %>%
           hot_col(col = c("Manual_Var_Comment","Manual_Var_Classif","Gene_Symbol","Protein_Change","Exon","Variant_Freq",
@@ -928,15 +953,15 @@ shinyServer(function(input, output, session) {
 }
                 if (instance.params && mhrows_list_gene.includes(value)) td.style.background = '#ff8080';
                 if (instance.params && mhrows_PatId_to_color.includes(value)) td.style.background = 'red';
-                if (instance.params && mhrows_Chr_to_color.includes(value)) td.style.background = 'yellow';
-                if (instance.params && mhrows_Manual_Var_Classif_to_color.includes(value)) td.style.background = 'blue';
-                if (instance.params && mhrows_Variant_Freq_to_color.includes(value)) td.style.background = 'orange';
+                if (instance.params && mhrows_Chr_to_color.includes(value)) td.style.background = 'blue';
+                if (instance.params && mhrows_Manual_Var_Classif_to_color.includes(value)) td.style.background = 'yellow';
+                if (instance.params && mhrows_Variant_Freq_to_color.includes(value)) td.style.background = 'brown';
                 if (instance.params && mhrows_Strand_to_color.includes(value)) td.style.background = 'green';
-                if (instance.params && mhrows_Strand_Bias_to_color.includes(value)) td.style.background = 'brown';
-                if (instance.params && mhrows_Protein_Change_to_color.includes(value)) td.style.background = '#00ffff';
+                if (instance.params && mhrows_Strand_Bias_to_color.includes(value)) td.style.background = 'grey';
+                if (instance.params && mhrows_Protein_Change_to_color.includes(value)) td.style.background = 'black';
                 if (instance.params && mhrows_Type_to_color.includes(value)) td.style.background = 'purple';
-                if (instance.params && mhrows_Reference_Seq_to_color.includes(value)) td.style.background = 'grey';
-                if (instance.params && mhrows_Variant_Seq_to_color.includes(value)) td.style.background = 'black';
+                if (instance.params && mhrows_Reference_Seq_to_color.includes(value)) td.style.background = 'pink';
+                if (instance.params && mhrows_Variant_Seq_to_color.includes(value)) td.style.background = 'orange';
 
 
 
@@ -944,8 +969,12 @@ shinyServer(function(input, output, session) {
       }"
         )
 
-
+       
         }
+       
+       
+       
+       
     })
 
 }
@@ -999,7 +1028,7 @@ shinyServer(function(input, output, session) {
     
     table.synIDNGS$valeur <- table.synIDNGS$valeur[!duplicated(table.synIDNGS$valeur[,c('inputfile')]),]
     table.synIDNGS$valeur <- table.synIDNGS$valeur[grep("T[0-9]", table.synIDNGS$valeur$inputfile, invert = TRUE),]
-    print(table.synIDNGS$valeur)
+    
 
     output$UploadButtonALLNGS <- renderUI({
       mainPanel(
@@ -1020,63 +1049,33 @@ shinyServer(function(input, output, session) {
     })
 
      }
-
+    output$Downloading <- renderUI({
+      mainPanel(
+        downloadButton("downloadNGS",label = "Download New Table"))
+      
+    })
+    
+    output$downloadNGS <- downloadHandler(
+      filename = function() { 
+        extension <- sub('\\.tsv$', '', input$file1) 
+        paste(extension, '_modified_by_shiny.tsv', sep='') },
+      content = function(file) {
+        write.table(DF.table$valeur, file, quote = FALSE, sep ="\t", row.names = FALSE)
+        
+      } # end of write file output
+    ) # end of button to download file
+    
+    
   })
 
 
+ 
+  
+   
+ 
   #=================================================================================================================================================
   # END OF NGS INPUT ===============================================================================================================================
   #=================================================================================================================================================
-  
-  
-  
-  
-  # purge list to upload button ###################################################################################################################
-
-
-  # observeEvent(input$file2,{
-  # 
-  #   output$PurgeListCelButton <- renderUI({
-  #     mainPanel(
-  #       actionButton("purge_list_cel", "Purge list to upload"))})
-  # 
-  #   output$PurgeListCel <- eventReactive(input$purge_list_cel, {
-  #     files_to_delete = paste0(dir_file$val,"/*")
-  #     withProgress(expr = {unlink(files_to_delete, recursive=TRUE)}, message = "Deleting tmp file... Please wait")
-  #     table.synIDCEL$valeur=table.synIDCEL$valeur[0,]
-  #     print(table.synIDCEL$valeur)
-  #     shinyjs::disable("tablesynIDCEL")
-  #     
-  #   })
-  # })
-  # 
-  # 
-  # observeEvent(input$file1,{
-  # 
-  #   output$PurgeListNgsButton <- renderUI({
-  #     mainPanel(
-  #       actionButton("purge_list_ngs", "Purge list to upload"))})
-  # 
-  #   output$PurgeListNgs <- eventReactive(input$purge_list_ngs, {
-  #     files_to_delete = paste0(dir_file$val,"/*")
-  #     withProgress(expr = {unlink(files_to_delete, recursive=TRUE)}, message = "Deleting tmp file... Please wait")
-  #     table.synIDNGS$valeur=table.synIDNGS$valeur[0,]
-  #     print(table.synIDNGS$valeur)
-  #     shinyjs::disable("table.synIDNGS")
-  #     
-  #   })
-  # })
-
-  
-#====================================================================================================================== purge list to upload button 
-#==================================================================================================================================================
-#==================================================================================================================================================
-  
-  
-  
-  
-  
-  
   
   
   
