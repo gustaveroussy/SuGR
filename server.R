@@ -885,7 +885,7 @@ shinyServer(function(input, output, session) {
         
           output$NGScheckGene <- renderText(
             paste0(div(style='color:black', div(style = 'background-color:#80ff80',
-                                                p("Your file is good to go")))))
+                                                p("Your file is good to go. You can download a new version below.")))))
             
         } else {
           
@@ -952,16 +952,16 @@ shinyServer(function(input, output, session) {
 
 }
                 if (instance.params && mhrows_list_gene.includes(value)) td.style.background = '#ff8080';
-                if (instance.params && mhrows_PatId_to_color.includes(value)) td.style.background = 'red';
-                if (instance.params && mhrows_Chr_to_color.includes(value)) td.style.background = 'blue';
-                if (instance.params && mhrows_Manual_Var_Classif_to_color.includes(value)) td.style.background = 'yellow';
-                if (instance.params && mhrows_Variant_Freq_to_color.includes(value)) td.style.background = 'brown';
-                if (instance.params && mhrows_Strand_to_color.includes(value)) td.style.background = 'green';
-                if (instance.params && mhrows_Strand_Bias_to_color.includes(value)) td.style.background = 'grey';
-                if (instance.params && mhrows_Protein_Change_to_color.includes(value)) td.style.background = 'black';
-                if (instance.params && mhrows_Type_to_color.includes(value)) td.style.background = 'purple';
-                if (instance.params && mhrows_Reference_Seq_to_color.includes(value)) td.style.background = 'pink';
-                if (instance.params && mhrows_Variant_Seq_to_color.includes(value)) td.style.background = 'orange';
+                if (instance.params && mhrows_PatId_to_color.includes(value)) td.style.background = '#ff8080';
+                if (instance.params && mhrows_Chr_to_color.includes(value)) td.style.background = '#ff8080';
+                if (instance.params && mhrows_Manual_Var_Classif_to_color.includes(value)) td.style.background = '#ff8080';
+                if (instance.params && mhrows_Variant_Freq_to_color.includes(value)) td.style.background = '#ff8080';
+                if (instance.params && mhrows_Strand_to_color.includes(value)) td.style.background = '#ff8080';
+                if (instance.params && mhrows_Strand_Bias_to_color.includes(value)) td.style.background = '#ff8080';
+                if (instance.params && mhrows_Protein_Change_to_color.includes(value)) td.style.background = '#ff8080';
+                if (instance.params && mhrows_Type_to_color.includes(value)) td.style.background = '#ff8080';
+                if (instance.params && mhrows_Reference_Seq_to_color.includes(value)) td.style.background = '#ff8080';
+                if (instance.params && mhrows_Variant_Seq_to_color.includes(value)) td.style.background = '#ff8080';
 
 
 
