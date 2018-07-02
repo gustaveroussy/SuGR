@@ -249,8 +249,6 @@ shinyServer(function(input, output, session) {
                        uiOutput("UploadALLNGS"), # upload all the files on synapse
                        br(),br(),br(),br(),
                        uiOutput("SaveChanges"), # save changed made on edit table
-                       br(),br(),br(),
-                       uiOutput("Downloading"),
                        uiOutput("DownLoadNGS"), 
                        br(),br(),br(),
                        rHandsontableOutput("hot") # table to be edited
@@ -275,10 +273,11 @@ shinyServer(function(input, output, session) {
                                   "Bioinformatics plateform for any requests.")),
         div (style='color:grey', p(style = "text-align:center","Or download the help document for further information.")),
         br(),
-        div(style="text-align: center;",
+        div(style="display:block;text-align:center",
             actionButton("helper", "Help document", onclick = "window.open('SuGR.pdf')")),
-        div(style="text-align: right;",
-            actionButton("close", "Close window"))
+        br(),
+        div(style="display:block;text-align:center",
+            actionButton("close", "Close Window"))
         
       ) #end of fluidPage
       
@@ -738,10 +737,13 @@ shinyServer(function(input, output, session) {
 
       output$SaveChanges <- renderUI({
         mainPanel(
-          actionButton("saveBtn", "Save changes"))
+          div(style="display:inline-block",actionButton("saveBtn", "Save changes")),
+          div(style="display:inline-block",downloadButton("downloadNGS",label = "Download New Table")))
 
       }) # end of renderUI uploadbuttonNGS
 
+      
+      
       # remove button and isolate to update file automatically
       # after each table change
       observe({input$saveBtn
@@ -751,6 +753,14 @@ shinyServer(function(input, output, session) {
           withProgress(expr = {write.table(hot_to_r(input$hot), innew.file_ngs$valeur , quote = FALSE, sep = "\t",row.names = FALSE)},
                        message = "Saving modifications... Please wait")
           
+          output$downloadNGS <- downloadHandler(
+            filename = function() { 
+              extension <- sub('\\.tsv$', '', input$file1) 
+              paste(extension, '_modified_by_shiny.tsv', sep='') },
+             content = function(file) {
+                write.table(hot_to_r(input$hot), file , quote = FALSE, sep = "\t",row.names = FALSE)
+             } # end of write file output
+          ) # end of button to download file
           
         }
       })
@@ -895,7 +905,9 @@ shinyServer(function(input, output, session) {
                                                   Please check the table below and the Sample Sheet Rules to correct the table.")))))
           
         }
-      
+
+        
+        
         DF.table$valeur = DF
         
        rhandsontable(DF, list_gene = list_gene, PatId_to_color = PatId_to_color, Chr_to_color = Chr_to_color, Manual_Var_Classif_to_color = Manual_Var_Classif_to_color, Variant_Freq_to_color = Variant_Freq_to_color, Strand_to_color = Strand_to_color, Strand_Bias_to_color = Strand_Bias_to_color, Protein_Change_to_color = Protein_Change_to_color, Type_to_color = Type_to_color, Reference_Seq_to_color = Reference_Seq_to_color, Variant_Seq_to_color = Variant_Seq_to_color, height = 400) %>%
@@ -1049,23 +1061,7 @@ shinyServer(function(input, output, session) {
     })
 
      }
-    output$Downloading <- renderUI({
-      mainPanel(
-        downloadButton("downloadNGS",label = "Download New Table"))
-      
-    })
-    
-    output$downloadNGS <- downloadHandler(
-      filename = function() { 
-        extension <- sub('\\.tsv$', '', input$file1) 
-        paste(extension, '_modified_by_shiny.tsv', sep='') },
-      content = function(file) {
-        write.table(DF.table$valeur, file, quote = FALSE, sep ="\t", row.names = FALSE)
-        
-      } # end of write file output
-    ) # end of button to download file
-    
-    
+
   })
 
 
