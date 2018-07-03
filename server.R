@@ -88,7 +88,7 @@ shinyServer(function(input, output, session) {
         div (style='color:grey', p(style = "text-align:center","Or download the help document for further information.")),
         br(),
         div(style="text-align: center;",
-            actionButton("helper", "Help document", onclick = "window.open('SuGR.pdf')"))
+            actionButton("helper", "Help document", onclick = "window.open('SuGR_readme.html')"))
         
       )
     } else {
@@ -274,7 +274,7 @@ shinyServer(function(input, output, session) {
         div (style='color:grey', p(style = "text-align:center","Or download the help document for further information.")),
         br(),
         div(style="display:block;text-align:center",
-            actionButton("helper", "Help document", onclick = "window.open('SuGR.pdf')")),
+            actionButton("helper", "Help document", onclick = "window.open('SuGR_readme.html')")),
         br(),
         div(style="display:block;text-align:center",
             actionButton("close", "Close Window"))
