@@ -29,9 +29,12 @@ library(htmlwidgets)
 
 fluidPage(theme = shinytheme("flatly"),
           
-          titlePanel(div(img(src = "UNICANCER.png", height = 150, width = 350 ), 
-                         p(style = "text-align:center;font-size:80px;font-weight:bold;color:#19334d;",
-                           "SuGR"))),
+          titlePanel(div(
+                      img(src = "UNICANCER.png", height = 150, width = 350 ), 
+                      p(style = "text-align:center;font-size:80px;font-weight:bold;color:#19334d;",
+                        "SuGR")
+                      )
+                     ),
           
           uiOutput("ui")
           
